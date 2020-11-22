@@ -1,5 +1,5 @@
 const express = require("express")
-const {json} = require("express")
+const { json } = require("express")
 const cors = require("cors")
 const morgan = require("morgan")
 const benficiarioRouter = require("./routes")
@@ -13,6 +13,6 @@ app.use(json())
 
 app.use('/api', benficiarioRouter)
 
-app.listen(port, ()=> {
+app.listen(port, () => {
     console.log(`App funcionando en el puerto ${port}`)
 })
