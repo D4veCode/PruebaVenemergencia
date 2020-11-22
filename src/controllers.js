@@ -2,6 +2,18 @@ const ObjectsToCsv = require('objects-to-csv')
 const { promises: fs } = require("fs")
 const neatCsv = require('neat-csv')
 
+function comparar(a,b) {
+    if(a.created_at > b.created_at){
+        comparacion = 1
+    }
+    else {
+        comparacion = -1
+    }
+    return comparacion * -1
+}
+
+
+
 const createBeneficiario = async (req, res) => {
     try {
         let beneficiario = req.body
@@ -26,20 +38,46 @@ const createBeneficiario = async (req, res) => {
 }
 
 const listAllBeneficiarios = (req, res) => {
-    fs.readFile('beneficiarios.csv')
-        .then(async data => {
-            let beneficiarios = await neatCsv(data)
-            res.status(200).json({
-                data: beneficiarios
+
+    if (Object.keys(req.query).length !== 0) {
+        if (req.query.sortBy == 'created_at') {
+            fs.readFile('beneficiarios.csv')
+                .then(async data => {
+                    let beneficiarios = await neatCsv(data)
+                    let sortedBeneficiarios = beneficiarios.sort(comparar)
+                    res.status(200).json({
+                        data: sortedBeneficiarios
+                    })
+                })
+                .catch(err => {
+                    console.log(err)
+                    res.status(500).json({
+                        created: false,
+                        err: "Error, intente nuevamente"
+                    })
+                })
+        }else {
+            res.status(422).json({
+                err: "Query no valido"
             })
-        })
-        .catch(err => {
-            console.log(err)
-            res.status(500).json({
-                created: false,
-                err: "Error, intente nuevamente"
+        }
+    } else {
+        fs.readFile('beneficiarios.csv')
+            .then(async data => {
+                let beneficiarios = await neatCsv(data)
+                res.status(200).json({
+                    data: beneficiarios
+                })
             })
-        })
+            .catch(err => {
+                console.log(err)
+                res.status(500).json({
+                    created: false,
+                    err: "Error, intente nuevamente"
+                })
+            })
+    }
+
 }
 
 const getBeneficiarioByDni = (req, res) => {
@@ -80,10 +118,10 @@ const updateBeneficiarioByDni = (req, res) => {
             let beneficiario = beneficiarios.filter(ben => ben.dni == dni)[0]
 
             if (beneficiario) {
-                let newBeneficiarios = beneficiarios.map(ben => Number(ben.dni) == dni ? {...ben, ...req.body} : ben)
+                let newBeneficiarios = beneficiarios.map(ben => Number(ben.dni) == dni ? { ...ben, ...req.body } : ben)
 
                 const csv = new ObjectsToCsv(newBeneficiarios)
-                await csv.toDisk('beneficiarios.csv', {append: false})
+                await csv.toDisk('beneficiarios.csv', { append: false })
 
                 res.status(200).json({
                     msg: "Beneficiario actualizado con exito"
@@ -119,7 +157,7 @@ const deleteBeneficiarioByDni = (req, res) => {
                 let newBeneficiarios = beneficiarios.filter(ben => Number(ben.dni) !== dni)
 
                 const csv = new ObjectsToCsv(newBeneficiarios)
-                await csv.toDisk('beneficiarios.csv', {append: false})
+                await csv.toDisk('beneficiarios.csv', { append: false })
 
                 res.status(200).json({
                     msg: "Beneficiario eliminado correctamente."
