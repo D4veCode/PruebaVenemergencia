@@ -3,7 +3,7 @@ const yup = require("yup");
 let schemaPost = yup.object().shape({
     first_name: yup.string().required().min(3).max(50),
     last_name: yup.string().required().min(3).max(50),
-    dni: yup.number().required().min(4).max(50),
+    dni: yup.number().required(),
     birth_date: yup.date().required(),
     sex: yup.string().required().min(1).max(1).matches(/(F|M)/),
     country: yup.string().required().min(3).max(50),
@@ -13,7 +13,7 @@ let schemaPost = yup.object().shape({
 let schemaPatch = yup.object().shape({
     first_name: yup.string().min(3).max(50),
     last_name: yup.string().min(3).max(50),
-    dni: yup.number().min(4).max(50),
+    dni: yup.number(),
     birth_date: yup.date(),
     sex: yup.string().min(1).max(1).matches(/(F|M)/),
     country: yup.string().min(3).max(50),
