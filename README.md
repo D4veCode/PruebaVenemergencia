@@ -10,7 +10,7 @@ Para consumir la api puede ingresar al siguiente enlace [https://radiant-shelf-2
 Trae todos los beneficiarios disponibles en el archivo csv.
 
 ### filtro sortBy 
-Para el filtro sortBy por fecha colocarlo de la siguiente manera: `/api/beneficiarios/?sortBy=created_at y traerá los beneficiarios ordenados por fecha de creacion del mas reciente al mas antiguo.
+Para el filtro sortBy por fecha colocarlo de la siguiente manera: `/api/beneficiarios/?sortBy=created_at` y traerá los beneficiarios ordenados por fecha de creacion del mas reciente al mas antiguo.
 
 ## post `/api/beneficiario`
 
